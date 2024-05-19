@@ -84,16 +84,16 @@ async function blurImage(filePath) {
 }
 
 // Sends a notifications to all users when a new message is posted.
-exports.sendNotifications = functions.firestore.document('messages/{messageId}').onCreate(
+exports.sendNotifications = functions.region('europe-west6').firestore.document('personal_chats/{messageId}').onCreate(
   async (snapshot) => {
     // Notification details.
-    const text = snapshot.data().text;
+    const text = snapshot.data().channelId;
     const payload = {
       notification: {
-        title: `${snapshot.data().name} posted ${text ? 'a message' : 'an image'}`,
+        title: `${snapshot.data().channelId} posted ${text ? 'a message' : 'an image'}`,
         body: text ? (text.length <= 100 ? text : text.substring(0, 97) + '...') : '',
-        icon: snapshot.data().profilePicUrl || '/images/profile_placeholder.png',
-        click_action: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
+        icon: '/images/profile_placeholder.png',
+       // click_action: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
       }
     };
 
